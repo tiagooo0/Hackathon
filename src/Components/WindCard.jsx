@@ -22,7 +22,7 @@ function WindCard() {
 
   useEffect(() => {
     if (lat && lon) {
-      const urlClima = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      const urlClima = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
       fetch(urlClima)
         .then((response) => response.json())
         .then((data) => {
@@ -31,7 +31,7 @@ function WindCard() {
         })
         .catch((error) => console.error("Error", error));
 
-      const urlAire = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      const urlAire = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
       fetch(urlAire)
         .then((response) => response.json())
         .then((data) => {
@@ -68,42 +68,42 @@ function WindCard() {
         
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div className="bg-gray-700 p-4 rounded-lg">
-          <div className="flex">
-  <h3 className="text-lg font-semibold text-white mb-2">Viento</h3>
-  <img
-    src="/wind.svg"
-    alt="Icono de Viento"
-    className="ml-1 w-8 h-8"
-  />
-</div>
+            <div className="flex">
+              <h3 className="text-lg font-semibold text-white mb-2">Viento</h3>
+              <img
+                src="/wind.svg"
+                alt="Icono de Viento"
+                className="ml-1 w-8 h-8"
+              />
+            </div>
             <p className="text-gray-300">Velocidad: {datosClima.wind.speed} m/s</p>
             <p className="text-gray-300">Humedad: {datosClima.main.humidity}%</p>
-
             <p className="text-gray-300">Dirección: {datosClima.wind.deg}°</p>
           </div>
-                  <div className="bg-gray-700 p-4 rounded-lg">
-                  <div className=" flex">
-  <h3 className="text-lg font-semibold text-white mb-2">Temperatura</h3>
-  <img
-    src="/public/thermometer-celsius.svg"
-    alt="Icono de Termometro"
-    className="  w-8 h-8"
-  />
-</div>
+          <div className="bg-gray-700 p-4 rounded-lg">
+            <div className="flex">
+              <h3 className="text-lg font-semibold text-white mb-2">Temperatura</h3>
+              <img
+                src="/thermometer-celsius.svg"
+                alt="Icono de Termómetro"
+                className="w-8 h-8"
+              />
+            </div>
             <p className="text-gray-300">{(datosClima.main.temp - 273.15).toFixed(2)} °C</p>
           </div>
         </div>
 
         {datosAire ? (
           <div className="bg-gray-700 p-4 rounded-lg">
-     <div className=" flex">
-  <h3 className="text-lg font-semibold text-white mb-2">Calidad del Aire</h3>
-  <img
-    src="/public/mist.svg"
-    alt="Icono de Neblina"
-    className="  w-8 h-8"
-  />
-</div>            <p className={`text-${getAirQualityColor(datosAire.main.aqi)}-500  text-blue-400 font-bold  mb-2`}>
+            <div className="flex">
+              <h3 className="text-lg font-semibold text-white mb-2">Calidad del Aire</h3>
+              <img
+                src="/mist.svg"
+                alt="Icono de Neblina"
+                className="w-8 h-8"
+              />
+            </div>
+            <p className={`text-${getAirQualityColor(datosAire.main.aqi)}-500 text-blue-400 font-bold mb-2`}>
               {getAirQuality(datosAire.main.aqi)}
             </p>
             <div className="grid grid-cols-2 gap-2">
