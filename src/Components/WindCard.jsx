@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function WindCard() {
+function WindCard(props) {
   const [datosClima, setDatosClima] = useState(null);
   const [datosAire, setDatosAire] = useState(null);
   const [lat, setLat] = useState(null);
@@ -40,6 +40,8 @@ function WindCard() {
         .catch((error) => console.error("Error ", error));
     }
   }, [lat, lon]);
+
+  useEffect
 
   const getAirQuality = (index) => {
     const qualities = ["Desconocido", "Muy Buena", "Buena", "Moderada", "Mala", "Muy mala"];

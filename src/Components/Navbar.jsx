@@ -15,8 +15,8 @@ export default function Navbar() {
           <div className="flex items-center">
             <div className="flex">
               <span className="text-xl font-bold">ClimApp</span> <img
-                src="/public/sunset.svg"
-                alt="Icono de Neblina"
+                src="/sunset.svg"
+                alt="Icono de Sol"
                 className="w-8 h-8"
               />
             </div>
