@@ -2,9 +2,22 @@ import { useState, useEffect } from "react";
 
 function WindCard() {
   const [datos, setDatos] = useState(null);
-  const [lat, setLat] = useState(-31.4201); // latitud de cba
-  const [lon, setLon] = useState(-64.1888); // longitud de cba
+  const [lat, setLat] = useState(0); // latitud inicial de Córdoba
+  const [lon, setLon] = useState(0); // longitud inicial de Córdoba
   const apiKey = '1d3b6bd1d18f1077d117ba209ae6fe06';
+
+  useEffect(() => {
+    // Solicitar la ubicación del usuario
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLat(position.coords.latitude);
+        setLon(position.coords.longitude);
+      },
+      (error) => {
+        console.error("Error obteniendo la ubicación:", error);
+      }
+    );
+  }, []);
 
   useEffect(() => {
     const url = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
