@@ -1,7 +1,8 @@
+import WindCard from "./WindCard";
 function Content() {
     return (
         <>
-            <p>soy el content</p>
+            <WindCard />
         </>
     )
 }
