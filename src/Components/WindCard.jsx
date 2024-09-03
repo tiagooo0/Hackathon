@@ -3,12 +3,11 @@ import { useState, useEffect } from "react";
 function WindCard() {
   const [datosClima, setDatosClima] = useState(null);
   const [datosAire, setDatosAire] = useState(null);
-  const [lat, setLat] = useState(-31.4201); // latitud inicial de Córdoba
-  const [lon, setLon] = useState(-64.1888); // longitud inicial de Córdoba
-  const [ciudad, setCiudad] = useState(""); // Estado para almacenar la ciudad
+  const [lat, setLat] = useState(null);
+  const [lon, setLon] = useState(null);
+  const [ciudad, setCiudad] = useState("");
   const apiKey = '1d3b6bd1d18f1077d117ba209ae6fe06';
 
-  // Obtener la ubicación del usuario
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -21,72 +20,83 @@ function WindCard() {
     );
   }, []);
 
-  // Obtener datos del clima y la ciudad
   useEffect(() => {
-    const urlClima = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-    fetch(urlClima)
-      .then((response) => response.json())
-      .then((data) => {
-        setDatosClima(data);
-        setCiudad(data.name); // Almacena el nombre de la ciudad
-      })
-      .catch((error) => console.error("Error fetching weather data:", error));
+    if (lat && lon) {
+      const urlClima = `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      fetch(urlClima)
+        .then((response) => response.json())
+        .then((data) => {
+          setDatosClima(data);
+          setCiudad(data.name);
+        })
+        .catch((error) => console.error("Error", error));
 
-    const urlAire = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-    fetch(urlAire)
-      .then((response) => response.json())
-      .then((data) => {
-        setDatosAire(data.list[0]); // Obtiene el primer conjunto de datos de calidad del aire
-      })
-      .catch((error) => console.error("Error fetching air quality data:", error));
+      const urlAire = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      fetch(urlAire)
+        .then((response) => response.json())
+        .then((data) => {
+          setDatosAire(data.list[0]);
+        })
+        .catch((error) => console.error("Error ", error));
+    }
   }, [lat, lon]);
 
-  // Función para obtener la calidad del aire basada en el índice
   const getAirQuality = (index) => {
-    switch (index) {
-      case 1:
-        return " Muy Buena";
-      case 2:
-        return "Buena";
-      case 3:
-        return "Moderada";
-      case 4:
-        return "Mala";
-      case 5:
-        return "Muy mala";
-      default:
-        return "Desconocido";
-    }
+    const qualities = ["Desconocido", "Muy Buena", "Buena", "Moderada", "Mala", "Muy mala"];
+    return qualities[index] || qualities[0];
   };
 
-  return (
-    <div>
-      {datosClima && datosClima.wind ? (
-        <div>
-          <h2>Datos del Viento y Calidad del Aire</h2>
-          <p>Estás ubicado en: {ciudad}</p>
-          <p>Velocidad del viento: {datosClima.wind.speed} m/s</p>
-          <p>Dirección del viento: {datosClima.wind.deg}°</p>
-          <p>Temperatura: {(datosClima.main.temp - 273.15).toFixed(2)} °C</p>
+  const getAirQualityColor = (index) => {
+    const colors = ["gray", "green", "yellow", "orange", "red", "purple"];
+    return colors[index] || colors[0];
+  };
 
-          {datosAire ? (
-            <div>
-              <h3>Calidad del Aire</h3>
-              <p>Calidad del Aire: {getAirQuality(datosAire.main.aqi)}</p>
-              <p>Concentración de SO₂: {datosAire.components.so2} μg/m³</p>
-              <p>Concentración de NO₂: {datosAire.components.no2} μg/m³</p>
-              <p>Concentración de PM10: {datosAire.components.pm10} μg/m³</p>
-              <p>Concentración de PM2.5: {datosAire.components.pm2_5} μg/m³</p>
-              <p>Concentración de O₃: {datosAire.components.o3} μg/m³</p>
-              <p>Concentración de CO: {datosAire.components.co} μg/m³</p>
-            </div>
-          ) : (
-            <p>Cargando calidad del aire...</p>
-          )}
+  if (!datosClima || !datosClima.wind) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-md mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4">
+      <div className="p-8">
+        <div className="uppercase tracking-wide text-sm text-blue-400 font-semibold mb-1">Datos Meteorológicos</div>
+        <h2 className="text-white text-2xl font-bold mb-2">Viento y Calidad del Aire</h2>
+        <p className="text-gray-400 mb-4">Ubicación: {ciudad}</p>
+        
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="bg-gray-700 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-white mb-2">Viento</h3>
+            <p className="text-gray-300">Velocidad: {datosClima.wind.speed} m/s</p>
+            <p className="text-gray-300">Dirección: {datosClima.wind.deg}°</p>
+          </div>
+          <div className="bg-gray-700 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-white mb-2">Temperatura</h3>
+            <p className="text-gray-300">{(datosClima.main.temp - 273.15).toFixed(2)} °C</p>
+          </div>
         </div>
-      ) : (
-        <p>Cargando...</p>
-      )}
+
+        {datosAire ? (
+          <div className="bg-gray-700 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold text-white mb-2">Calidad del Aire</h3>
+            <p className={`text-${getAirQualityColor(datosAire.main.aqi)}-500 font-bold mb-2`}>
+              {getAirQuality(datosAire.main.aqi)}
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <p className="text-gray-300">SO₂: {datosAire.components.so2} μg/m³</p>
+              <p className="text-gray-300">NO₂: {datosAire.components.no2} μg/m³</p>
+              <p className="text-gray-300">PM10: {datosAire.components.pm10} μg/m³</p>
+              <p className="text-gray-300">PM2.5: {datosAire.components.pm2_5} μg/m³</p>
+              <p className="text-gray-300">O₃: {datosAire.components.o3} μg/m³</p>
+              <p className="text-gray-300">CO: {datosAire.components.co} μg/m³</p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-400">Cargando calidad del aire...</p>
+        )}
+      </div>
     </div>
   );
 }
