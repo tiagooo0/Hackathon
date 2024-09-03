@@ -81,7 +81,7 @@ function WindCard() {
         {datosAire ? (
           <div className="bg-gray-700 p-4 rounded-lg">
             <h3 className="text-lg font-semibold text-white mb-2">Calidad del Aire</h3>
-            <p className={`text-${getAirQualityColor(datosAire.main.aqi)}-500 font-bold mb-2`}>
+            <p className={`text-${getAirQualityColor(datosAire.main.aqi)}-500  text-blue-400 font-bold  mb-2`}>
               {getAirQuality(datosAire.main.aqi)}
             </p>
             <div className="grid grid-cols-2 gap-2">
