@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function WindCard(props) {
+function WindCard() {
   const [datosClima, setDatosClima] = useState(null);
   const [datosAire, setDatosAire] = useState(null);
   const [lat, setLat] = useState(null);
